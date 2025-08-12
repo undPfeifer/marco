@@ -6,8 +6,8 @@
                 
             </div>
             <div>
-                <h2>Lorem ipsum dolor sit amet consectetur adipisicing elit. Excepturi, unde?</h2>
-                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Sed sunt iste ipsa optio obcaecati voluptas maxime itaque debitis aliquam nulla maiores quidem, fuga aut accusantium! Beatae eveniet nobis saepe!</p>
+                <h2>Liebe Marco</h2>
+                <p>Alles Gueti zum Geburtstag wünsch ich dir. Ich hoffe du ehsch freud a mim geschenk(no refunds) <br>din Fründ Dimitri</p>
                 
                 <div class="flex-vert list">
                     <NuxtLink href="/stimm">                    

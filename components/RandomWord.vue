@@ -1,7 +1,9 @@
 <template>
     <section>
         <div style="display:flex">
-          <h1>{{ randomWord }}</h1> 
+          <h1 v-if="syllableCount<5">{{ randomWord }}</h1> 
+          <h1 v-else class="smaller">{{ randomWord }}</h1> 
+
           <button>☆</button>
       </div>
   
@@ -9,7 +11,7 @@
       <div class="controls">
         <button @click="decrease" :disabled="syllableCount === 1">−</button>
         <span>silbe: {{ syllableCount }}</span>
-        <button @click="increase" :disabled="syllableCount === 4">+</button>
+        <button @click="increase" :disabled="syllableCount === 10">+</button>
       </div>
   
       <!-- new word -->
@@ -18,76 +20,67 @@
   </template>
   
   <script setup>
-  import { ref, computed, onMounted } from 'vue'
-  
-  const randomWord = ref('lade wörter...')  // loading text
-  const syllableCount = ref(3)  // start with 3 syllables
-  
-  // placeholders for arrays, only 3 syllables filled dynamically
-  const oneSyllable = ["Haus", "Tier", "Mund"] // static for now
-  const twoSyllables = ["Auto", "Fenster", "Sonne"] // static for now
-  const threeSyllables = ref([])
-  const fourSyllables = ["Schokolade", "Offensichtlich", "Universität"] // static for now
-  
-  // Fetch function for a category
-  async function fetchCategoryWords(category) {
-    let words = []
-    let cmcontinue = null
-  
-    do {
-      const url = new URL('https://en.wiktionary.org/w/api.php')
-      url.searchParams.set('action', 'query')
-      url.searchParams.set('list', 'categorymembers')
-      url.searchParams.set('cmtitle', `Category:${category}`)
-      url.searchParams.set('cmlimit', 'max')
-      url.searchParams.set('format', 'json')
-      url.searchParams.set('origin', '*')
-      if (cmcontinue) url.searchParams.set('cmcontinue', cmcontinue)
-  
-      const response = await fetch(url)
-      const data = await response.json()
-  
-      words.push(...data.query.categorymembers.map(entry => entry.title))
-  
-      cmcontinue = data.continue?.cmcontinue || null
-    } while (cmcontinue)
-  
-    return words
+ import { ref, computed, onMounted } from 'vue'
+
+const randomWord = ref('lade wörter...')  // loading text
+const syllableCount = ref(1)  // start with 1 syllable
+
+const syllableWords = {
+  '1': ref([]),
+  '2': ref([]),
+  '3': ref([]),
+  '4': ref([]),
+  '5': ref([]),
+  '6': ref([]),
+  '7': ref([]),
+  '8': ref([]),
+  '9': ref([]),
+  '10': ref([]),
+}
+
+async function loadLocalWords(syllCount) {
+  try {
+    const res = await fetch(`/words/german_${syllCount}_syllable_words.json`)
+    if (!res.ok) throw new Error('Failed to load JSON')
+    const data = await res.json()
+    syllableWords[syllCount].value = data
+  } catch (e) {
+    console.error(`Error loading syllable ${syllCount} words:`, e)
   }
-  
-  onMounted(async () => {
-    threeSyllables.value = await fetchCategoryWords('German_3-syllable_words')
-    newWord() // pick a random word on load
-  })
-  
-  // computed returns the active list for the current syllable count
-  const currentList = computed(() => {
-    if (syllableCount.value === 1) return oneSyllable
-    if (syllableCount.value === 2) return twoSyllables
-    if (syllableCount.value === 3) return threeSyllables.value
-  
-    return fourSyllables
-  })
-  
-  function newWord() {
-    const list = currentList.value
-    if (!list || list.length === 0) {
-      randomWord.value = '—' // fallback if array is empty
-      return
-    }
-    const idx = Math.floor(Math.random() * list.length)
-    randomWord.value = list[idx]
+}
+
+onMounted(async () => {
+  const syllableCounts = ['1','2','3', '4','5','6','7','8','9','10']
+  for (const count of syllableCounts) {
+    await loadLocalWords(count)
   }
-  
-  function increase() {
-    if (syllableCount.value < 4) syllableCount.value++
-    newWord()
+  newWord() // pick a random word after loading
+})
+
+const currentList = computed(() => {
+  return syllableWords[syllableCount.value.toString()]?.value || []
+})
+
+function newWord() {
+  const list = currentList.value
+  if (!list || list.length === 0) {
+    randomWord.value = 'ayo da isch nüt'
+    return
   }
-  
-  function decrease() {
-    if (syllableCount.value > 1) syllableCount.value--
-    newWord()
-  }
+  const idx = Math.floor(Math.random() * list.length)
+  randomWord.value = list[idx]
+}
+
+function increase() {
+  if (syllableCount.value < 10) syllableCount.value++
+  newWord()
+}
+
+function decrease() {
+  if (syllableCount.value > 1) syllableCount.value--
+  newWord()
+}
+
   </script>
   
   <style scoped>
@@ -120,5 +113,9 @@
     }
     .new-word{
         font-size: 32px;
+    }
+    .smaller {
+        font-size: 32px;
+        letter-spacing: -1px;
     }
 </style>
