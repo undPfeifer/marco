@@ -4,7 +4,7 @@
           <h1 v-if="syllableCount<5">{{ randomWord }}</h1> 
           <h1 v-else class="smaller">{{ randomWord }}</h1> 
 
-          <button>☆</button>
+          <button @click="favoriteCurrentWord">☆</button>
       </div>
   
       <!-- syllable controls -->
@@ -125,6 +125,10 @@ async function getFavoriteWords() {
 console.log(getFavoriteWords())
 
 
+function favoriteCurrentWord() {
+  addFavoriteWord(randomWord.value)
+}
+
   </script>
   
   <style scoped>
@@ -144,6 +148,7 @@ console.log(getFavoriteWords())
         background-color: black;
         color: white;
         cursor: pointer;
+        font-size: 24px;
     }
     button:hover {
         opacity: 75;
