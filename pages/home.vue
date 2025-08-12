@@ -5,6 +5,7 @@
         <div class="wrapper">
              <RandomWord />
         </div>
+        <playsong />
         
     </section>
 </template>

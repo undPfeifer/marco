@@ -14,10 +14,22 @@ import { onMounted } from 'vue';
   
 
       <NuxtPage />
+      <AppNav />
+
 
 </template>
 
 <style>
+
+a, button {
+  -webkit-tap-highlight-color: transparent;
+  tap-highlight-color: transparent;
+  -webkit-user-select: none; /* optional: prevent text selection on tap */
+  user-select: none;
+}
+
+
+
 
 * {
   box-sizing: border-box;

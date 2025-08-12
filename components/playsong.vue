@@ -8,6 +8,7 @@
         @click="playTrack(file)"
       >
         <h4 class="player--title">{{ file.name }}</h4>
+        
       </div>
     </section>
   
@@ -18,8 +19,11 @@
     >
       <h4>{{ currentTrack.name }}</h4>
       <button @click="togglePlay" style="color:white">
-        {{ isPlaying ? 'II' : '>' }}
+        {{ isPlaying ? 'II' : '❥' }}
       </button>
+      <button @click="toggleRepeat" class="repeat" :style="{ color: isRepeat ? 'orange' : 'white' }">
+  ♺
+</button>
   
       <!-- Progress Bar -->
       <div
@@ -60,6 +64,9 @@
   const currentTime = ref(0)
   const duration = ref(0)
   const isDragging = ref(false)
+
+  const isRepeat = ref(false)
+
   
   const progressPercentage = computed(() => {
     return duration.value ? (currentTime.value / duration.value) * 100 : 0
@@ -162,7 +169,22 @@
       isPlaying.value = false
       currentTime.value = 0
     })
+    audio.addEventListener('ended', () => {
+  if (isRepeat.value) {
+    audio.currentTime = 0
+    audio.play()
+  } else {
+    isPlaying.value = false
+    currentTime.value = 0
+  }
+})
   })
+
+  function toggleRepeat() {
+  isRepeat.value = !isRepeat.value
+}
+
+
   </script>
   
   <style scoped>
@@ -171,7 +193,7 @@
   }
     .global-player{
         position: fixed;
-        bottom: 0px;
+        bottom: 50px;
         left: 0px;
         z-index: 99999999;
 
@@ -249,6 +271,11 @@ color: #b4b4c2;
 
 .player--title {
     color: black;
+}
+
+.repeat {
+  background-color: black;
+  color: white;
 }
 
     </style>

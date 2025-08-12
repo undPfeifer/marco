@@ -116,6 +116,6 @@ function decrease() {
     }
     .smaller {
         font-size: 32px;
-        letter-spacing: -1px;
+        letter-spacing: -0px;
     }
 </style>
