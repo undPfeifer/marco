@@ -24,7 +24,7 @@
 <script setup>
 const marcotrolllist = [
   "Hupen",
-  "Hurebock",
+  "Hurenbock",
   "Zwangsarbeit",
   "Moral",
   "Enten",
@@ -39,23 +39,23 @@ const marcotrolllist = [
   "Titten",
   "Himmelfahrtskommando",
   "Eier",
-  "entleeren",
+
   "argwöhnisch",
   "Neunzigeuro",
   "Preisleistungsverhältniss",
   "diabolisch",
-  "Samenspender",
+
   "Hölle",
   "Fingerspitzengefühl",
   "Prostatamassage",
   "Brot",
   "Bibel",
   "Kauffrau",
-  "Minderjährig",
+
   "Saft",
-  "Samen",
+
   "Seele",
-  "Hurenbock",
+
   "Strich",
   "klebrig",
 ];
@@ -105,7 +105,8 @@ onMounted(async () => {
 });
 
 const currentList = computed(() => {
-  return syllableWords[syllableCount.value.toString()]?.value || [];
+  return marcotrolllist;
+  // return syllableWords[syllableCount.value.toString()]?.value || [];
 });
 
 function newWord() {
