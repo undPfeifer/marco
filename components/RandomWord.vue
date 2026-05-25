@@ -1,22 +1,22 @@
 <template>
   <section>
     <div class="container">
-      <div style="display: flex">
+      <div class="word-container">
         <h1 v-if="syllableCount < 5">{{ randomWord }}</h1>
         <h1 v-else class="smaller">{{ randomWord }}</h1>
 
-        <button @click="favoriteCurrentWord">☆</button>
+        <button @click="favoriteCurrentWord" class="green-bg">☆</button>
       </div>
 
       <!-- syllable controls -->
-      <div class="controls">
+      <div class="controls" style="display: none">
         <button @click="decrease" :disabled="syllableCount === 1">−</button>
         <span>silbe: {{ syllableCount }}</span>
         <button @click="increase" :disabled="syllableCount === 10">+</button>
       </div>
 
       <!-- new word -->
-      <button @click="newWord" class="new-word">♋︎</button>
+      <button @click="newWord" class="new-word red-bg">♋︎</button>
     </div>
   </section>
 </template>
@@ -162,6 +162,19 @@ function favoriteCurrentWord() {
 </script>
 
 <style scoped>
+.red-bg {
+  background-color: red;
+}
+
+.green-bg {
+  background-color: green;
+}
+
+body {
+  padding: 0px;
+  background-color: red !important;
+}
+
 h1 {
   margin-right: 10px;
   font-family: Helvetica;
@@ -170,12 +183,32 @@ h1 {
 
 .container {
   background-color: white;
-  padding: 8px;
+  padding: 20px;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  gap: 40px;
+
+  align-items: center;
+}
+
+.word-container {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
 }
 
 section {
   width: 100%;
   background-color: blue;
+  margin: 0px;
+  padding: 20px;
+  background-color:;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 80dvh;
+  overflow: hidden;
 }
 
 button {
