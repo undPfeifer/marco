@@ -1,170 +1,204 @@
 <template>
-    <section>
-        <div style="display:flex">
-          <h1 v-if="syllableCount<5">{{ randomWord }}</h1> 
-          <h1 v-else class="smaller">{{ randomWord }}</h1> 
+  <section>
+    <div class="container">
+      <div style="display: flex">
+        <h1 v-if="syllableCount < 5">{{ randomWord }}</h1>
+        <h1 v-else class="smaller">{{ randomWord }}</h1>
 
-          <button @click="favoriteCurrentWord">☆</button>
+        <button @click="favoriteCurrentWord">☆</button>
       </div>
-  
+
       <!-- syllable controls -->
       <div class="controls">
         <button @click="decrease" :disabled="syllableCount === 1">−</button>
         <span>silbe: {{ syllableCount }}</span>
         <button @click="increase" :disabled="syllableCount === 10">+</button>
       </div>
-  
+
       <!-- new word -->
       <button @click="newWord" class="new-word">♋︎</button>
-    </section>
-  </template>
-  
-  <script setup>
-import { ref, computed, onMounted } from 'vue'
-import { createClient } from '@supabase/supabase-js'
+    </div>
+  </section>
+</template>
 
-const supabaseUrl = 'https://kifdamniffzvjqrioqic.supabase.co'
-const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtpZmRhbW5pZmZ6dmpxcmlvcWljIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzM4NTQ5NTgsImV4cCI6MjA0OTQzMDk1OH0.v4_-ZDTWMgFpClLf7aEXO3KpqDfTjNFWuoFT4fijQIA'
+<script setup>
+const marcotrolllist = [
+  "Hupen",
+  "Hurebock",
+  "Zwangsarbeit",
+  "Moral",
+  "Enten",
+  "Spanien",
+  "schwierig",
+  "Freunde",
+  "Valencia",
+  "Massage",
+  "Happyend",
+  "Öl",
+  "Möpse",
+  "Titten",
+  "Himmelfahrtskommando",
+  "Eier",
+  "entleeren",
+  "argwöhnisch",
+  "Neunzigeuro",
+  "Preisleistungsverhältniss",
+  "diabolisch",
+  "Samenspender",
+  "Hölle",
+  "Fingerspitzengefühl",
+  "Prostatamassage",
+  "Brot",
+  "Bibel",
+  "Kauffrau",
+  "Minderjährig",
+  "Saft",
+  "Samen",
+  "Seele",
+  "Hurenbock",
+  "Strich",
+  "klebrig",
+];
 
-const supabase = createClient(supabaseUrl, supabaseKey)
+import { ref, computed, onMounted } from "vue";
+import { createClient } from "@supabase/supabase-js";
 
-const randomWord = ref('lade wörter...')  // loading text
-const syllableCount = ref(1)  // start with 1 syllable
+const supabaseUrl = "https://kifdamniffzvjqrioqic.supabase.co";
+const supabaseKey =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtpZmRhbW5pZmZ6dmpxcmlvcWljIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzM4NTQ5NTgsImV4cCI6MjA0OTQzMDk1OH0.v4_-ZDTWMgFpClLf7aEXO3KpqDfTjNFWuoFT4fijQIA";
+
+const supabase = createClient(supabaseUrl, supabaseKey);
+
+const randomWord = ref("lade wörter..."); // loading text
+const syllableCount = ref(1); // start with 1 syllable
 
 const syllableWords = {
-  '1': ref([]),
-  '2': ref([]),
-  '3': ref([]),
-  '4': ref([]),
-  '5': ref([]),
-  '6': ref([]),
-  '7': ref([]),
-  '8': ref([]),
-  '9': ref([]),
-  '10': ref([]),
-}
+  1: ref([]),
+  2: ref([]),
+  3: ref([]),
+  4: ref([]),
+  5: ref([]),
+  6: ref([]),
+  7: ref([]),
+  8: ref([]),
+  9: ref([]),
+  10: ref([]),
+};
 
 async function loadLocalWords(syllCount) {
   try {
-    const res = await fetch(`/words/german_${syllCount}_syllable_words.json`)
-    if (!res.ok) throw new Error('Failed to load JSON')
-    const data = await res.json()
-    syllableWords[syllCount].value = data
+    const res = await fetch(`/words/german_${syllCount}_syllable_words.json`);
+    if (!res.ok) throw new Error("Failed to load JSON");
+    const data = await res.json();
+    syllableWords[syllCount].value = data;
   } catch (e) {
-    console.error(`Error loading syllable ${syllCount} words:`, e)
+    console.error(`Error loading syllable ${syllCount} words:`, e);
   }
 }
 
 onMounted(async () => {
-  const syllableCounts = ['1','2','3', '4','5','6','7','8','9','10']
+  const syllableCounts = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"];
   for (const count of syllableCounts) {
-    await loadLocalWords(count)
+    await loadLocalWords(count);
   }
-  newWord() // pick a random word after loading
-})
+  newWord(); // pick a random word after loading
+});
 
 const currentList = computed(() => {
-  return syllableWords[syllableCount.value.toString()]?.value || []
-})
+  return syllableWords[syllableCount.value.toString()]?.value || [];
+});
 
 function newWord() {
-  const list = currentList.value
+  const list = currentList.value;
   if (!list || list.length === 0) {
-    randomWord.value = 'ayo da isch nüt'
-    return
+    randomWord.value = "ayo da isch nüt";
+    return;
   }
-  const idx = Math.floor(Math.random() * list.length)
-  randomWord.value = list[idx]
+  const idx = Math.floor(Math.random() * list.length);
+  randomWord.value = list[idx];
 }
 
 function increase() {
-  if (syllableCount.value < 10) syllableCount.value++
-  newWord()
+  if (syllableCount.value < 10) syllableCount.value++;
+  newWord();
 }
 
 function decrease() {
-  if (syllableCount.value > 1) syllableCount.value--
-  newWord()
+  if (syllableCount.value > 1) syllableCount.value--;
+  newWord();
 }
 
-
-
-
-
-
-//supabase 
-
+//supabase
 
 async function addFavoriteWord(word) {
   const { data, error } = await supabase
-    .from('marco_fav_words')
-    .insert([{ name: word }]) // ✅ match column name
-  
+    .from("marco_fav_words")
+    .insert([{ name: word }]); // ✅ match column name
+
   if (error) {
-    console.error('Error inserting word:', error)
+    console.error("Error inserting word:", error);
   } else {
-    console.log('Inserted word:', data)
+    console.log("Inserted word:", data);
   }
 }
-
-
 
 async function getFavoriteWords() {
-  const { data, error } = await supabase
-    .from('marco_fav_words')
-    .select('*')
-  
+  const { data, error } = await supabase.from("marco_fav_words").select("*");
+
   if (error) {
-    console.error('Error fetching words:', error)
+    console.error("Error fetching words:", error);
   } else {
-    console.log('Favorite words:', data)
-    return data
+    console.log("Favorite words:", data);
+    return data;
   }
 }
 
-console.log(getFavoriteWords())
-
+console.log(getFavoriteWords());
 
 function favoriteCurrentWord() {
-  addFavoriteWord(randomWord.value)
+  addFavoriteWord(randomWord.value);
+}
+</script>
+
+<style scoped>
+h1 {
+  margin-right: 10px;
+  font-family: Helvetica;
+  letter-spacing: -3px;
 }
 
-  </script>
-  
-  <style scoped>
+.container {
+  background-color: white;
+  padding: 8px;
+}
 
-    h1 {
-        margin-right: 10px;
-    }
+section {
+  width: 100%;
+  background-color: blue;
+}
 
-    section {
-        width: 100%;
-    }
+button {
+  border: none;
+  background-color: black;
+  color: white;
+  cursor: pointer;
+  font-size: 24px;
+}
+button:hover {
+  opacity: 75;
+  background-color: rgb(27, 49, 75);
+}
 
-
-
-    button {
-        border: none;
-        background-color: black;
-        color: white;
-        cursor: pointer;
-        font-size: 24px;
-    }
-    button:hover {
-        opacity: 75;
-        background-color: rgb(27, 49, 75);
-    }
-
-    .controls {
-        padding: 12px 0px;
-        display: flex;
-        gap: 8px;
-    }
-    .new-word{
-        font-size: 32px;
-    }
-    .smaller {
-        font-size: 32px;
-        letter-spacing: -0px;
-    }
+.controls {
+  padding: 12px 0px;
+  display: flex;
+  gap: 8px;
+}
+.new-word {
+  font-size: 32px;
+}
+.smaller {
+  font-size: 32px;
+  letter-spacing: -0px;
+}
 </style>
